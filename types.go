@@ -11,6 +11,10 @@ import (
 
 // TODO(amit): Add velocity (volume) to individual notes.
 
+// TODO(amit): Encode tempo in a way that Reaper can recognize.
+
+// TODO(amit): Add humanize feature.
+
 // A Track is an entire drum track, with its drum data and metadata.
 type Track struct {
 	Hits []*Hit // Order of hits in this track.
@@ -76,25 +80,15 @@ func (t *Track) encodeHits() []byte {
 
 // A Hit is a set of drums being hit at the same time.
 type Hit struct {
-	Notes map[byte]struct{} // Set of notes to strike.
+	Notes map[byte]Velocity // Notes to strike with their velocities.
 	T     uint              // Number of ticks this hit lasts (96 is a quarter bar).
-	V     Velocity          // Velocity (volume) of the hit.
-}
-
-// NewHit returns a new hit instance.
-func NewHit(ticks uint, v Velocity, notes ...byte) *Hit {
-	h := &Hit{map[byte]struct{}{}, ticks, v}
-	for _, n := range notes {
-		h.Notes[n] = struct{}{}
-	}
-	return h
 }
 
 // encode returns a binary encoding of the hit as midi events.
 func (h *Hit) encode() []byte {
 	buf := bytes.NewBuffer(nil)
-	for n := range h.Notes {
-		buf.Write([]byte{0, 0x99, n, byte(h.V)})
+	for n, v := range h.Notes {
+		buf.Write([]byte{0, 0x99, n, byte(v)})
 	}
 	first := true
 	for n := range h.Notes {

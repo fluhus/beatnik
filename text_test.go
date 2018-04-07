@@ -12,19 +12,21 @@ func TestParseHit(t *testing.T) {
 		in   string
 		want *Hit
 	}{
-		{"42", NewHit(96*4, F, 42)},
-		{"36,49,57..+", NewHit(96, FF, 49, 57, 36)},
-		{"36,49,57....----", NewHit(24, PP, 49, 57, 36)},
+		{"42", &Hit{map[byte]Velocity{42: F}, 96 * 4}},
+		{"36+,49,57+..", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96}},
+		{"36----,49---,57++....", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24}},
 	}
 
-	for _, test := range tests {
+	for i, test := range tests {
 		got, err := parseHit(test.in)
 		if err != nil {
-			t.Errorf("parseHit(%v), want success: %v", test.in, err)
+			t.Errorf("#%v/%v parseHit(%v), want success: %v",
+				i+1, len(tests), test.in, err)
 			continue
 		}
 		if !reflect.DeepEqual(got, test.want) {
-			t.Errorf("parseHit(%v)=%v, want %v", test.in, got, test.want)
+			t.Errorf("#%v/%v parseHit(%v)=%v, want %v",
+				i+1, len(tests), test.in, got, test.want)
 		}
 	}
 }
@@ -37,26 +39,27 @@ func TestParseHit_badInput(t *testing.T) {
 		"42+-",
 		"42-------------",
 		"42.............",
-		"42+.",
+		"42.+",
 		"11",
 		"0",
 		"127",
 	}
 
-	for _, test := range tests {
+	for i, test := range tests {
 		if got, err := parseHit(test); err == nil {
-			t.Errorf("parseHit(%v)=%v, want failure", test, got)
+			t.Errorf("#%v/%v parseHit(%v)=%v, want failure",
+				i+1, len(tests), test, got)
 		}
 	}
 }
 
 func TestParseTrack(t *testing.T) {
-	in := "bpm:123  42   \t\n  36,49,57..+\n\n\t\t  \t\t\n\n36,49,57....----"
+	in := "bpm:123  42   \t\n  36+,49+,57+..\n\n\t\t  \t\t\n\n36----,49----,57----...."
 	want := &Track{
 		Hits: []*Hit{
-			NewHit(96*4, F, 42),
-			NewHit(96, FF, 49, 57, 36),
-			NewHit(24, PP, 49, 57, 36),
+			&Hit{map[byte]Velocity{42: F}, 96 * 4},
+			&Hit{map[byte]Velocity{49: FF, 57: FF, 36: FF}, 96},
+			&Hit{map[byte]Velocity{49: PP, 57: PP, 36: PP}, 24},
 		},
 		BPM: 123,
 	}

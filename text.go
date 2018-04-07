@@ -10,8 +10,9 @@ import (
 )
 
 var (
-	hitToken       = regexp.MustCompile("^(\\d+(?:,\\d+)*)(\\.*)(\\+*|-*)$")
+	hitToken       = regexp.MustCompile("^(\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*)(\\.*)$")
 	directiveToken = regexp.MustCompile("^([^:]+):(.*)$")
+	noteToken      = regexp.MustCompile("^(\\d+)(\\+*|-*)$")
 	tokenizer      = regexp.MustCompile("(?m)\\s+")
 	comment        = regexp.MustCompile("#[^\n]*")
 
@@ -90,12 +91,9 @@ func parseHit(s string) (*Hit, error) {
 		return nil, fmt.Errorf("bad hit: %q", s)
 	}
 
-	notes := []byte{}
-	for _, n := range strings.Split(m[1], ",") {
-		if drumNotes[n] == 0 {
-			return nil, fmt.Errorf("bad drum number: %q", n)
-		}
-		notes = append(notes, drumNotes[n])
+	notes, err := parseNotes(m[1])
+	if err != nil {
+		return nil, err
 	}
 
 	d := durations[m[2]]
@@ -103,12 +101,30 @@ func parseHit(s string) (*Hit, error) {
 		return nil, fmt.Errorf("bad duration: %q", m[2])
 	}
 
-	v := velocities[m[3]]
-	if v == 0 {
-		return nil, fmt.Errorf("bad velocity: %q", m[3])
+	return &Hit{notes, d}, nil
+}
+
+// parseNotes parses the notes section of a hit token.
+func parseNotes(s string) (map[byte]Velocity, error) {
+	notes := map[byte]Velocity{}
+
+	for _, part := range strings.Split(s, ",") {
+		m := noteToken.FindStringSubmatch(part)
+		if m == nil {
+			return nil, fmt.Errorf("bad note token: %q", part)
+		}
+
+		note, v := drumNotes[m[1]], velocities[m[2]]
+		if note == 0 {
+			return nil, fmt.Errorf("bad drum number: %q", m[1])
+		}
+		if v == 0 {
+			return nil, fmt.Errorf("bad velocity: %q", m[2])
+		}
+		notes[note] = v
 	}
 
-	return NewHit(d, v, notes...), nil
+	return notes, nil
 }
 
 // A directive is a function that alters the track itself.
