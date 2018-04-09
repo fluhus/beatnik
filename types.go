@@ -9,10 +9,10 @@ import (
 	"encoding/binary"
 )
 
-// TODO(amit): Add velocity (volume) to individual notes.
-
+// TODO(amit): Support waits.
+// TODO(amit): Support triplets.
+// TODO(amit): Support ghost notes.
 // TODO(amit): Encode tempo in a way that Reaper can recognize.
-
 // TODO(amit): Add humanize feature.
 
 // A Track is an entire drum track, with its drum data and metadata.
