@@ -16,8 +16,11 @@ var (
 	tokenizer      = regexp.MustCompile("(?m)\\s+")
 	comment        = regexp.MustCompile("#[^\n]*")
 
-	drumNotes  = map[string]byte{}    // Maps textual representation of note numbers to byte values.
-	velocities = map[string]Velocity{ // Maps +- notation to actual velocities.
+	// Maps textual representation of note numbers to byte values.
+	drumNotes = map[string]byte{}
+
+	// Maps +- notation to actual velocities.
+	velocities = map[string]Velocity{
 		"-----": PPP,
 		"----":  PP,
 		"---":   P,
@@ -27,7 +30,9 @@ var (
 		"+":     FF,
 		"++":    FFF,
 	}
-	durations = map[string]uint{ // Maps dot notation to note duration in ticks.
+
+	// Maps dot notation to note duration in ticks.
+	durations = map[string]uint{
 		"":       96 * 4,
 		".":      96 * 2,
 		"..":     96,
@@ -37,12 +42,14 @@ var (
 		"......": 96 / 16,
 	}
 
+	// Maps directive name (in text syntax) to its handler.
 	directives = map[string]directive{
 		"bpm": bpmDirective,
 	}
 )
 
 func init() {
+	// Initialize drumNotes with mapping from string to byte ("38": byte(38)).
 	for i := byte(35); i <= 81; i++ {
 		drumNotes[fmt.Sprint(i)] = i
 	}
