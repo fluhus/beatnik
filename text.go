@@ -72,7 +72,7 @@ func ParseTrack(s string) (*Track, error) {
 				return nil, fmt.Errorf("token #%v: %v", i, err)
 			}
 		default:
-			return nil, fmt.Errorf("token #%v: unrecognized token: %q", i, token)
+			return nil, fmt.Errorf("token #%v: unrecognized token: %q", i+1, token)
 		}
 	}
 	return t, nil

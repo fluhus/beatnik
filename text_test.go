@@ -13,6 +13,7 @@ func TestParseHit(t *testing.T) {
 		want *Hit
 	}{
 		{"42~~", &Hit{map[byte]Velocity{42: F}, 96 * 4}},
+		{"38-..", &Hit{map[byte]Velocity{38: MF}, 96 / 4}},
 		{"36+,49,57+", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96}},
 		{"36----,49---,57++..", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24}},
 	}
