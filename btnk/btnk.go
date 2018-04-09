@@ -22,7 +22,12 @@ func main() {
 			fmt.Printf("failed to parse %q: %v\n", f, err)
 			continue
 		}
-		err = ioutil.WriteFile(f+".mid", t.MarshalBinary(), 0600)
+		b, err := t.MarshalBinary()
+		if err != nil {
+			fmt.Printf("failed to encode: %v\n", err)
+			continue
+		}
+		err = ioutil.WriteFile(f+".mid", b, 0600)
 		if err != nil {
 			fmt.Printf("failed to write %q: %v\n", f+".mid", err)
 			continue
