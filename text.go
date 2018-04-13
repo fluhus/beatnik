@@ -51,8 +51,9 @@ var (
 
 func init() {
 	// Initialize drumNotes with mapping from string to byte ("38": byte(38)).
-	for i := byte(35); i <= 81; i++ {
-		drumNotes[fmt.Sprint(i)] = i
+	byteMax := int(^byte(0))
+	for i := 1; i <= byteMax; i++ {
+		drumNotes[fmt.Sprint(i)] = byte(i)
 	}
 }
 

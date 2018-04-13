@@ -42,9 +42,7 @@ func TestParseHit_badInput(t *testing.T) {
 		"42.............",
 		"42~~~~~~~~~~~",
 		"42.+",
-		"11",
 		"0",
-		"127",
 	}
 
 	for i, test := range tests {
