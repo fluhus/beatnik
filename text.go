@@ -11,6 +11,7 @@ import (
 
 var (
 	hitToken       = regexp.MustCompile("^(\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*)(\\.*|~*)$")
+	waitToken      = regexp.MustCompile("^(\\.*|~*)$")
 	noteToken      = regexp.MustCompile("^(\\d+)(\\+*|-*)$")
 	directiveToken = regexp.MustCompile("^([^:]+):(.*)$")
 	tokenizer      = regexp.MustCompile("(?m)\\s+")
@@ -68,6 +69,15 @@ func ParseTrack(s string) (*Track, error) {
 				return nil, fmt.Errorf("token #%v: %v", i, err)
 			}
 			t.Hits = append(t.Hits, h)
+		case waitToken.MatchString(token):
+			d := durations[token]
+			if d == 0 {
+				return nil, fmt.Errorf("token #%v: bad duration: %q", i+1, token)
+			}
+			if len(t.Hits) == 0 {
+				return nil, fmt.Errorf("token #%v: duration with no preceding note", i+1)
+			}
+			t.Hits[len(t.Hits)-1].T += d
 		case directiveToken.MatchString(token):
 			if err := t.parseDirective(token); err != nil {
 				return nil, fmt.Errorf("token #%v: %v", i, err)

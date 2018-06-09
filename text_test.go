@@ -43,6 +43,7 @@ func TestParseHit_badInput(t *testing.T) {
 		"42~~~~~~~~~~~",
 		"42.+",
 		"0",
+		".",
 	}
 
 	for i, test := range tests {
@@ -54,12 +55,15 @@ func TestParseHit_badInput(t *testing.T) {
 }
 
 func TestParseTrack(t *testing.T) {
-	in := "bpm:123  42~~   \t\n  36+,49+,57+\n\n\t\t  \t\t\n\n36----,49----,57----.."
+	in := "bpm:123  42~~   \t\n  36+,49+,57+\n\n\t\t  \t\t\n\n" +
+		"36----,49----,57----.. 36,46 . .. 38,42"
 	want := &Track{
 		Hits: []*Hit{
 			&Hit{map[byte]Velocity{42: F}, 96 * 4},
 			&Hit{map[byte]Velocity{49: FF, 57: FF, 36: FF}, 96},
 			&Hit{map[byte]Velocity{49: PP, 57: PP, 36: PP}, 24},
+			&Hit{map[byte]Velocity{46: F, 36: F}, 96 + 48 + 24},
+			&Hit{map[byte]Velocity{38: F, 42: F}, 96},
 		},
 		BPM: 123,
 	}
