@@ -55,8 +55,6 @@ func TestParseHit_badInput(t *testing.T) {
 }
 
 func TestParseTrack(t *testing.T) {
-	in := "bpm:123  42~~   \t\n  36+,49+,57+\n\n\t\t  \t\t\n\n" +
-		"36----,49----,57----.. 36,46 . .. 38,42"
 	want := &Track{
 		Hits: []*Hit{
 			&Hit{map[byte]Velocity{42: F}, 96 * 4},
@@ -67,11 +65,19 @@ func TestParseTrack(t *testing.T) {
 		},
 		BPM: 123,
 	}
-	got, err := ParseTrack(in)
+	got, err := ParseTrack(testTrack)
 	if err != nil {
-		t.Fatalf("parseHits(%v) should succeed, but failed: %v", in, err)
+		t.Fatalf("parseHits(%v) should succeed, but failed: %v", testTrack, err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Fatalf("parseHits(%v)=%v, want %v", in, got, want)
+		t.Fatalf("parseHits(%v)=%v, want %v", testTrack, got, want)
 	}
 }
+
+var testTrack = `bpm:123  # Track tempo.
+42~~#~  	
+  36+,49+,57+
+  
+# Just a comment.
+		36----,49----,57----.. 36,46 . .. 38,42
+`
