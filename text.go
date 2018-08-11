@@ -10,9 +10,14 @@ import (
 )
 
 var (
+	complexHitToken = regexp.MustCompile("^" +
+		// Optional grace hit.
+		"(?:\\((\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*(?:\\.*|~*))\\))?" +
+		// Main hit.
+		"(\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*(?:\\.*|~*))$")
 	hitToken       = regexp.MustCompile("^(\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*)(\\.*|~*)$")
-	waitToken      = regexp.MustCompile("^(\\.*|~*)$")
 	noteToken      = regexp.MustCompile("^(\\d+)(\\+*|-*)$")
+	waitToken      = regexp.MustCompile("^(\\.*|~*)$")
 	directiveToken = regexp.MustCompile("^([^:]+):(.*)$")
 	tokenizer      = regexp.MustCompile("(?m)\\s+")
 	comment        = regexp.MustCompile("#[^\n]*")
@@ -63,8 +68,30 @@ func ParseTrack(s string) (*Track, error) {
 	t := &Track{}
 	for i, token := range tokenize(s) {
 		switch {
-		case hitToken.MatchString(token):
-			h, err := parseHit(token)
+		case complexHitToken.MatchString(token):
+			match := complexHitToken.FindStringSubmatch(token)
+
+			// Parse grace hit.
+			if match[1] != "" {
+				g, err := parseHit(match[1])
+				if err != nil {
+					return nil, fmt.Errorf("token #%v (grace note): %v", i, err)
+				}
+				// Shorten last hit.
+				if len(t.Hits) > 0 {
+					last := t.Hits[len(t.Hits)-1]
+					if last.T <= g.T {
+						return nil, fmt.Errorf("token #%v: grace note is too long: "+
+							"%v ticks, should be less than %v",
+							i, g.T, last.T)
+					}
+					last.T -= g.T
+				}
+				t.Hits = append(t.Hits, g)
+			}
+
+			// Parse main hit.
+			h, err := parseHit(match[2])
 			if err != nil {
 				return nil, fmt.Errorf("token #%v: %v", i, err)
 			}

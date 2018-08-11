@@ -54,6 +54,35 @@ func TestParseHit_badInput(t *testing.T) {
 	}
 }
 
+func TestParseTrack_graceNotes(t *testing.T) {
+	in := "bpm:111 (36)42 38. (44,43-..)46"
+	want := &Track{
+		Hits: []*Hit{
+			&Hit{map[byte]Velocity{36: F}, 96},
+			&Hit{map[byte]Velocity{42: F}, 96},
+			&Hit{map[byte]Velocity{38: F}, 24},
+			&Hit{map[byte]Velocity{44: F,43:MF}, 24},
+			&Hit{map[byte]Velocity{46: F}, 96},
+		},
+		BPM: 111,
+	}
+	got, err := ParseTrack(in)
+	if err != nil {
+		t.Fatalf("ParseTrack(%v) should succeed, but failed: %v", in, err)
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("ParseTrack(%v)=%v, want %v", in, got, want)
+	}
+}
+
+func TestParseTrack_badGraceNote(t *testing.T) {
+	in := "bpm:111 (36)42 38. (44,43-.)46"
+	got, err := ParseTrack(in)
+	if err == nil {
+		t.Fatalf("ParseTrack(%v)=%v, want failure", in, got)
+	}
+}
+
 func TestParseTrack(t *testing.T) {
 	want := &Track{
 		Hits: []*Hit{
@@ -67,10 +96,10 @@ func TestParseTrack(t *testing.T) {
 	}
 	got, err := ParseTrack(testTrack)
 	if err != nil {
-		t.Fatalf("parseHits(%v) should succeed, but failed: %v", testTrack, err)
+		t.Fatalf("ParseTrack(%v) should succeed, but failed: %v", testTrack, err)
 	}
 	if !reflect.DeepEqual(got, want) {
-		t.Fatalf("parseHits(%v)=%v, want %v", testTrack, got, want)
+		t.Fatalf("ParseTrack(%v)=%v, want %v", testTrack, got, want)
 	}
 }
 
