@@ -5,8 +5,6 @@ import (
 	"testing"
 )
 
-// TODO(amit): Add comments to test texts.
-
 func TestParseHit(t *testing.T) {
 	tests := []struct {
 		in   string
@@ -55,13 +53,13 @@ func TestParseHit_badInput(t *testing.T) {
 }
 
 func TestParseTrack_graceNotes(t *testing.T) {
-	in := "bpm:111 (36)42 38. (44,43-..)46"
+	in := "bpm:111 (36) 42 38. (44,43-..) 46"
 	want := &Track{
 		Hits: []*Hit{
 			&Hit{map[byte]Velocity{36: F}, 96},
 			&Hit{map[byte]Velocity{42: F}, 96},
 			&Hit{map[byte]Velocity{38: F}, 24},
-			&Hit{map[byte]Velocity{44: F,43:MF}, 24},
+			&Hit{map[byte]Velocity{44: F, 43: MF}, 24},
 			&Hit{map[byte]Velocity{46: F}, 96},
 		},
 		BPM: 111,
@@ -76,7 +74,7 @@ func TestParseTrack_graceNotes(t *testing.T) {
 }
 
 func TestParseTrack_badGraceNote(t *testing.T) {
-	in := "bpm:111 (36)42 38. (44,43-.)46"
+	in := "bpm:111 (36) 42 38. (44,43-.) 46"
 	got, err := ParseTrack(in)
 	if err == nil {
 		t.Fatalf("ParseTrack(%v)=%v, want failure", in, got)
@@ -110,3 +108,33 @@ var testTrack = `bpm:123  # Track tempo.
 # Just a comment.
 		36----,49----,57----.. 36,46 . .. 38,42
 `
+
+func TestParenthesized(t *testing.T) {
+	yes := []string{"()", "(a)", "(aaa)"}
+	no := []string{"(", ")", "(a", "a)", "a", ""}
+	for _, s := range yes {
+		if !parenthesized(s) {
+			t.Errorf("parenthesized(%q)=false, want true", s)
+		}
+	}
+	for _, s := range no {
+		if parenthesized(s) {
+			t.Errorf("parenthesized(%q)=true, want false", s)
+		}
+	}
+}
+
+func TestHalfParenthesized(t *testing.T) {
+	yes := []string{"(", ")", "(a", "a)"}
+	no := []string{"()", "(a)", "(aaa)", "a", ""}
+	for _, s := range yes {
+		if !halfParenthesized(s) {
+			t.Errorf("halfParenthesized(%q)=false, want true", s)
+		}
+	}
+	for _, s := range no {
+		if halfParenthesized(s) {
+			t.Errorf("halfParenthesized(%q)=true, want false", s)
+		}
+	}
+}

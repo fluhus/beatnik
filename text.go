@@ -10,12 +10,7 @@ import (
 )
 
 var (
-	complexHitToken = regexp.MustCompile("^" +
-		// Optional grace hit.
-		"(?:\\((\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*(?:\\.*|~*))\\))?" +
-		// Main hit.
-		"(\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*(?:\\.*|~*))$")
-	hitToken       = regexp.MustCompile("^(\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*)(\\.*|~*)$")
+	hitToken       = regexp.MustCompile("^\\(?(\\d+(?:\\+*|-*)(?:,\\d+(?:\\+*|-*))*)(\\.*|~*)\\)?$")
 	noteToken      = regexp.MustCompile("^(\\d+)(\\+*|-*)$")
 	waitToken      = regexp.MustCompile("^(\\.*|~*)$")
 	directiveToken = regexp.MustCompile("^([^:]+):(.*)$")
@@ -68,33 +63,38 @@ func ParseTrack(s string) (*Track, error) {
 	t := &Track{}
 	for i, token := range tokenize(s) {
 		switch {
-		case complexHitToken.MatchString(token):
-			match := complexHitToken.FindStringSubmatch(token)
-
-			// Parse grace hit.
-			if match[1] != "" {
-				g, err := parseHit(match[1])
-				if err != nil {
-					return nil, fmt.Errorf("token #%v (grace note): %v", i, err)
-				}
-				// Shorten last hit.
-				if len(t.Hits) > 0 {
-					last := t.Hits[len(t.Hits)-1]
-					if last.T <= g.T {
-						return nil, fmt.Errorf("token #%v: grace note is too long: "+
-							"%v ticks, should be less than %v",
-							i, g.T, last.T)
-					}
-					last.T -= g.T
-				}
-				t.Hits = append(t.Hits, g)
+		case hitToken.MatchString(token):
+			if halfParenthesized(token) {
+				return nil, fmt.Errorf(
+					"token #%v: grace notes should have parenthesis on both sides", i)
 			}
 
-			// Parse main hit.
-			h, err := parseHit(match[2])
+			// Check for grace.
+			grace := false
+			if parenthesized(token) {
+				grace = true
+				token = token[1 : len(token)-1]
+			}
+
+			// Parse hit.
+			h, err := parseHit(token)
 			if err != nil {
 				return nil, fmt.Errorf("token #%v: %v", i, err)
 			}
+
+			if grace {
+				// Shorten last hit.
+				if len(t.Hits) > 0 {
+					last := t.Hits[len(t.Hits)-1]
+					if last.T <= h.T {
+						return nil, fmt.Errorf("token #%v: grace note is too long: "+
+							"%v ticks, should be less than %v",
+							i, h.T, last.T)
+					}
+					last.T -= h.T
+				}
+			}
+
 			t.Hits = append(t.Hits, h)
 		case waitToken.MatchString(token):
 			d := durations[token]
@@ -171,6 +171,18 @@ func parseNotes(s string) (map[byte]Velocity, error) {
 	}
 
 	return notes, nil
+}
+
+// parenthesized returns true if s starts and ends with parenthesis.
+func parenthesized(s string) bool {
+	return len(s) > 0 && s[0] == '(' && s[len(s)-1] == ')'
+}
+
+// halfParenthesized returns true if s only starts or only ends with parenthesis.
+func halfParenthesized(s string) bool {
+	return len(s) > 0 &&
+		((s[0] == '(' && s[len(s)-1] != ')') ||
+			(s[0] != '(' && s[len(s)-1] == ')'))
 }
 
 // A directive is a function that alters the track itself.
