@@ -14,6 +14,10 @@ func TestParseHit(t *testing.T) {
 		{"38-..", &Hit{map[byte]Velocity{38: MF}, 96 / 4}},
 		{"36+,49,57+", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96}},
 		{"36----,49---,57++..", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24}},
+		{"HC~~", &Hit{map[byte]Velocity{22: F}, 96 * 4}},
+		{"S-..", &Hit{map[byte]Velocity{38: MF}, 96 / 4}},
+		{"K+,C2,C3+", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96}},
+		{"K----,C2---,C3++..", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24}},
 	}
 
 	for i, test := range tests {
@@ -34,6 +38,8 @@ func TestParseHit_badInput(t *testing.T) {
 	tests := []string{
 		"",
 		"ananas",
+		"GFSDG",
+		"KK",
 		"42,",
 		"42+-",
 		"42-------------",
@@ -89,6 +95,9 @@ func TestParseTrack(t *testing.T) {
 			&Hit{map[byte]Velocity{49: PP, 57: PP, 36: PP}, 24},
 			&Hit{map[byte]Velocity{46: F, 36: F}, 96 + 48 + 24},
 			&Hit{map[byte]Velocity{38: F, 42: F}, 96},
+			&Hit{map[byte]Velocity{36: F, 38: F, 22: F}, 96},
+			&Hit{map[byte]Velocity{36: F, 58: F}, 96 / 2},
+			&Hit{map[byte]Velocity{40: MF}, 96 * 2},
 		},
 		BPM: 123,
 	}
@@ -106,7 +115,8 @@ var testTrack = `bpm:123  # Track tempo.
   36+,49+,57+
   
 # Just a comment.
-		36----,49----,57----.. 36,46 . .. 38,42
+		36----,49----,57----.. 36,46 . .. 38,42 # hi.#$$dfSfsdxc
+K,S,HC . (C3M,K.) SR-~
 `
 
 func TestParenthesized(t *testing.T) {
