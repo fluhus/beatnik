@@ -111,12 +111,12 @@ type Velocity byte
 
 // Predefined velocities.
 const (
-	PPP Velocity = 16  // Pianississimo
-	PP  Velocity = 32  // Pianissimo
-	P   Velocity = 48  // Piano
-	MP  Velocity = 64  // Mezzo-piano
-	MF  Velocity = 80  // Mezzo-forte
-	F   Velocity = 96  // Forte
-	FF  Velocity = 112 // Fortissimo
-	FFF Velocity = 127 // Fortississimo
+	PPP Velocity = 85  // Pianississimo
+	PP           = 91  // Pianissimo
+	P            = 97  // Piano
+	MP           = 103 // Mezzo-piano
+	MF           = 109 // Mezzo-forte
+	F            = 115 // Forte
+	FF           = 121 // Fortissimo
+	FFF          = 127 // Fortississimo
 )
