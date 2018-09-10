@@ -10,7 +10,7 @@ import (
 	"fmt"
 )
 
-// TODO(amit): Support triplets.
+// TODO(amit): Support different drum machine configurations.
 // TODO(amit): Encode tempo in a way that Reaper can recognize.
 // TODO(amit): Add humanize feature.
 

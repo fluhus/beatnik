@@ -34,6 +34,35 @@ func TestParseHit(t *testing.T) {
 	}
 }
 
+func TestParseHit_triplets(t *testing.T) {
+	tests := []struct {
+		in   string
+		want *Hit
+	}{
+		{"42~~>", &Hit{map[byte]Velocity{42: F}, 96 * 4 / 3}},
+		{"38-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 4 / 3}},
+		{"36+,49,57+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 / 3}},
+		{"36----,49---,57++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 / 3}},
+		{"HC~~>", &Hit{map[byte]Velocity{22: F}, 96 * 4 / 3}},
+		{"S-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 4 / 3}},
+		{"K+,C2,C3+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 / 3}},
+		{"K----,C2---,C3++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 / 3}},
+	}
+
+	for i, test := range tests {
+		got, err := parseHit(test.in)
+		if err != nil {
+			t.Errorf("#%v/%v parseHit(%v), want success: %v",
+				i+1, len(tests), test.in, err)
+			continue
+		}
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("#%v/%v parseHit(%v)=%v, want %v",
+				i+1, len(tests), test.in, got, test.want)
+		}
+	}
+}
+
 func TestParseHit_badInput(t *testing.T) {
 	tests := []string{
 		"",

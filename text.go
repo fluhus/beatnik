@@ -11,9 +11,9 @@ import (
 
 var (
 	hitToken = regexp.MustCompile("^\\(?([0-9A-Z]+(?:\\+*|-*)" +
-		"(?:,[0-9A-Z]+(?:\\+*|-*))*)(\\.*|~*)\\)?$")
+		"(?:,[0-9A-Z]+(?:\\+*|-*))*)((?:\\.*|~*)>?)\\)?$")
 	noteToken      = regexp.MustCompile("^([0-9A-Z]+)(\\+*|-*)$")
-	waitToken      = regexp.MustCompile("^(\\.*|~*)$")
+	waitToken      = regexp.MustCompile("^(?:\\.*|~*)>?$")
 	directiveToken = regexp.MustCompile("^([^:]+):(.*)$")
 	tokenizer      = regexp.MustCompile("(?m)\\s+")
 	comment        = regexp.MustCompile("#[^\n]*")
@@ -99,6 +99,11 @@ func init() {
 	byteMax := int(^byte(0))
 	for i := 1; i <= byteMax; i++ {
 		drumNotes[fmt.Sprint(i)] = byte(i)
+	}
+
+	// Add triplets to durations.
+	for d := range durations {
+		durations[d+">"] = durations[d] / 3
 	}
 }
 
