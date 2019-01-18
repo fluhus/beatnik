@@ -259,7 +259,7 @@ func bpmDirective(t *Track, s string) error {
 		return fmt.Errorf("bad input to BPM: %v", err)
 	}
 	if bpm < 1 || bpm > 500 {
-		return fmt.Errorf("bad BPM: %v, must be between 1 and 500")
+		return fmt.Errorf("bad BPM: %v, must be between 1 and 500", bpm)
 	}
 	t.BPM = uint(bpm)
 	return nil
