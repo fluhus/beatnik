@@ -36,6 +36,8 @@ var (
 		"HO3": 26, // Hi-hat open 3
 		"HO4": 60, // Hi-hat open 4
 		"HO5": 17, // Hi-hat open 5
+		"HP":  21, // Hi-hat pedal (closed)
+		"HPO": 23, // Hi-hat pedal (open)
 		"HS":  65, // Hi-hat seq hits
 
 		"C1":  55, // Crash 1
