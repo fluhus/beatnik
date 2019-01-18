@@ -19,9 +19,9 @@ func indexPage(f string) (*template.Template, error) {
 	return template.New("index").Parse(string(data))
 }
 
-var indexPageTemplate = template.Must(template.New("index").Parse(indexPageContent))
+var indexPageTemplate = template.Must(template.New("index").Parse(indexPageSrc))
 
-const indexPageContent = `<!DOCTYPE html>
+const indexPageSrc = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <title>Beatnik</title>
@@ -45,11 +45,11 @@ const indexPageContent = `<!DOCTYPE html>
       <textarea class="form-control" rows="10" name="src" style="font-family: monospace">bpm:120
 
 # Try this example!
-42,36. 42. 42,38. 42.
-42,36. 42. 42,38. 42.
-42,36. 42. 42,38. 42.
-38+.. 38.. 38.. 38.. 43+.. 43.. 41.. 41..
-36,57~~</textarea>
+HC,K. HC.   HC,S. HC.
+HC,K. HC,K. HC,S. HC.
+HC,K. HC.   HC,S. HC.
+S+.. S.. S.. S.. T3+.. T3.. T4.. T4..
+K,C3~~</textarea>
     </div>
     <button type="submit" class="btn btn-primary">Get MIDI!</button>
   </form>
@@ -62,18 +62,18 @@ const indexPageContent = `<!DOCTYPE html>
 	<hr>
     <h4>Notes</h4>
     <p>A note is a single hit on multiple drums at the same time.
-	A note has drum numbers, velocities and duration.</p>
+	A note has drums, velocities and duration.</p>
     <p>Example:</p>
     <h4>
       <samp>
-        <span class="text-primary">38</span>,<span class="text-primary">46</span><span
+        <span class="text-primary">S</span>,<span class="text-primary">HC</span><span
         class="text-danger">+</span><span class="text-success">..</span>
       </samp>
     </h4>
     <ol>
       <li>
-        <span class="text-primary"><b>Drum numbers:</b></span>
-        Drum numbers (midi standard) seperated by commas.
+        <span class="text-primary"><b>Drum symbols:</b></span>
+        Drum symbols (letters) or numbers (midi notes) seperated by commas.
       </li>
       <li>
         <span class="text-danger"><b>Drum velocity:</b></span>

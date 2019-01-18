@@ -87,7 +87,7 @@ func templateVarName(s string) string {
 // constName returns a const name for the content of the given HTML file
 // prefix.
 func constName(s string) string {
-	return camelCase(append(strings.Split(s, "_"), "page", "content"))
+	return camelCase(append(strings.Split(s, "_"), "page", "src"))
 }
 
 // funcName returns a getter function name for the given HTML file prefix.
