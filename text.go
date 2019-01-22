@@ -105,7 +105,7 @@ func init() {
 
 	// Add triplets to durations.
 	for d := range durations {
-		durations[d+">"] = durations[d] / 3
+		durations[d+">"] = durations[d] * 2 / 3
 	}
 }
 
