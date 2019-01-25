@@ -39,14 +39,14 @@ func TestParseHit_triplets(t *testing.T) {
 		in   string
 		want *Hit
 	}{
-		{"42~~>", &Hit{map[byte]Velocity{42: F}, 96 * 4 / 3}},
-		{"38-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 4 / 3}},
-		{"36+,49,57+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 / 3}},
-		{"36----,49---,57++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 / 3}},
-		{"HC~~>", &Hit{map[byte]Velocity{22: F}, 96 * 4 / 3}},
-		{"S-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 4 / 3}},
-		{"K+,C2,C3+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 / 3}},
-		{"K----,C2---,C3++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 / 3}},
+		{"42~~>", &Hit{map[byte]Velocity{42: F}, 96 * 8 / 3}},
+		{"38-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 2 / 3}},
+		{"36+,49,57+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 * 2 / 3}},
+		{"36----,49---,57++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 * 2 / 3}},
+		{"HC~~>", &Hit{map[byte]Velocity{22: F}, 96 * 8 / 3}},
+		{"S-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 2 / 3}},
+		{"K+,C2,C3+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 * 2 / 3}},
+		{"K----,C2---,C3++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 * 2 / 3}},
 	}
 
 	for i, test := range tests {
