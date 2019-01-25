@@ -1,6 +1,34 @@
 package beatnik
 
-// Contains EZdrummer 2 mapping and raw numbers.
+// Default MIDI note mapping.
+var midiDrums = map[string]byte{
+	"K": 36, //Kick
+
+	"SS": 37, // Snare sidestick
+	"S":  38, // Snare
+
+	"HC": 42, // Hi-hat closed
+	"HO": 46, // Hi-hat open
+	"HP": 44, // Hi-hat pedal
+
+	"C1": 49, // Crash 1
+	"C2": 57, // Crash 2
+	"C3": 52, // Chinese cymbal
+	"C4": 55, // Splash cymbal
+
+	"R1": 51, // Ride 1
+	"R2": 59, // Ride 2
+	"RB": 53, // Ride 2
+
+	"T1": 50, // Tom 1
+	"T2": 48, // Tom 2
+	"T3": 47, // Tom 3
+	"T4": 45, // Tom 4
+	"T5": 43, // Tom 5
+	"T6": 41, // Tom 6
+}
+
+// EZdrummer 2 note mapping.
 var ezDrummer = map[string]byte{
 	"K": 36, // Kick
 
