@@ -5,7 +5,6 @@ package main
 
 import (
 	"bytes"
-	"flag"
 	"fmt"
 	"go/format"
 	"io/ioutil"
@@ -15,7 +14,6 @@ import (
 )
 
 func main() {
-	flag.Parse()
 	files := filesWithSuffix(".html")
 	t := template.Must(template.New("").Funcs(template.FuncMap{
 		"stringLiteral":   stringLiteral,
@@ -120,7 +118,7 @@ import (
 	"io/ioutil"
 )
 
-// Template is safe to use because it was tested during generation.
+// Default template is safe to use because it was tested during generation.
 func {{funcName .name}}(f string) (*template.Template, error) {
 	if f == "" {
 		return {{templateVarName .name}}, nil

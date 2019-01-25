@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 )
 
-// Template is safe to use because it was tested during generation.
+// Default template is safe to use because it was tested during generation.
 func indexPage(f string) (*template.Template, error) {
 	if f == "" {
 		return indexPageTemplate, nil
@@ -54,62 +54,6 @@ K,C3~~</textarea>
     <button type="submit" class="btn btn-primary">Get MIDI!</button>
   </form>
 
-  <hr>
-
-  <button class="btn btn-success" data-toggle="collapse" data-target="#tutorial">Tutorial</button>
-  <div id="tutorial" class="collapse">
-    <h3>Beatnik Language Tutorial</h3>
-	<hr>
-    <h4>Notes</h4>
-    <p>A note is a single hit on multiple drums at the same time.
-	A note has drums, velocities and duration.</p>
-    <p>Example:</p>
-    <h4>
-      <samp>
-        <span class="text-primary">S</span>,<span class="text-primary">HC</span><span
-        class="text-danger">+</span><span class="text-success">..</span>
-      </samp>
-    </h4>
-    <ol>
-      <li>
-        <span class="text-primary"><b>Drum symbols:</b></span>
-        Drum symbols (letters) or numbers (midi notes) seperated by commas.
-      </li>
-      <li>
-        <span class="text-danger"><b>Drum velocity:</b></span>
-        Each drum number can be followed by +'s or -'s for velocity.
-        <ul>
-          <li><b>[nothing]</b> Forte</li>
-          <li><b>++</b> Fortississimo</li>
-          <li><b>+</b> Fortissimo</li>
-          <li><b>-</b> Mezzo-forte</li>
-          <li><b>--</b> Mezzo-piano</li>
-          <li><b>---</b> Piano</li>
-          <li><b>----</b> Pianissimo</li>
-          <li><b>-----</b> Pianississimo</li>
-        </ul>
-      </li>
-	  <li>
-        <span class="text-success"><b>Note duration:</b></span>
-        Each note can be followed by .'s or ~'s for duration.
-        <ul>
-          <li><b>[nothing]</b> 1/4 bar</li>
-          <li><b>~~</b> 1 bar</li>
-          <li><b>~</b> 1/2 bar</li>
-          <li><b>.</b> 1/8 bar</li>
-          <li><b>..</b> 1/16 bar</li>
-          <li><b>...</b> 1/32 bar</li>
-          <li><b>....</b> 1/64 bar</li>
-          <li><b>.....</b> 1/128 bar</li>
-        </ul>
-      </li>
-    </ol>
-	<hr>
-	<h4>Comments</h4>
-	<p>When a hash sign (#) appears, everything on it's right is ignored.
-	Use this to annotate your beat!</p>
-	<p><pre>aasdf</pre></p>
-  </div>
 </div>
 
 </body>

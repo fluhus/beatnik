@@ -6,6 +6,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/fluhus/beatnik"
@@ -21,7 +22,7 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", mime.html)
-		indexPageTemplate.Execute(w, nil)
+		template.Must(indexPage(*src)).Execute(w, nil)
 	})
 
 	http.HandleFunc("/midi", func(w http.ResponseWriter, r *http.Request) {
