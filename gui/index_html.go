@@ -49,10 +49,16 @@ HC,K. HC.   HC,S. HC.
 HC,K. HC,K. HC,S. HC.
 HC,K. HC.   HC,S. HC.
 S+.. S.. S.. S.. T3+.. T3.. T4.. T4..
-K,C3~~</textarea>
+K,C2~~</textarea>
     </div>
     <button type="submit" class="btn btn-primary">Get MIDI!</button>
   </form>
+
+  <hr>
+  <p><a href="https://github.com/fluhus/beatnik/blob/master/TUTORIAL.md"
+      target="_blank">Language tutorial</a></p>
+  <p>Beatnik is <a href="https://github.com/fluhus/beatnik"
+                 target="_blank">open source</a></p>
 
 </div>
 
