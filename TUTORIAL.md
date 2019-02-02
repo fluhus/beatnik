@@ -115,8 +115,8 @@ HC,K. HC.   HC,S. HC.  # Check how this part sits with the bass
 |--|--|
 |`K`|Kick|
 |||
-|`SS`|Snare sidestick|
 |`S`|Snare|
+|`SS`|Snare sidestick|
 |||
 |`HC`|Hi-hat closed|
 |`HO`|Hi-hat open|
