@@ -109,7 +109,38 @@ HC,K. HC.   HC,S. HC.  # Check how this part sits with the bass
 
 ## Drum Symbols
 
-Currently written for EZDrummer 2. More drum sets will be supported in the future.
+### Windows Drums (default)
+
+|Symbol|Drum|
+|--|--|
+|`K`|Kick|
+|||
+|`SS`|Snare sidestick|
+|`S`|Snare|
+|||
+|`HC`|Hi-hat closed|
+|`HO`|Hi-hat open|
+|`HP`|Hi-hat pedal|
+|||
+|`C1`|Crash 1|
+|`C2`|Crash 2|
+|`C3`|Chinese cymbal|
+|`C4`|Splash cymbal|
+|||
+|`R1`|Ride 1|
+|`R2`|Ride 2|
+|`RB`|Ride bell|
+|||
+|`T1`|Tom 1|
+|`T2`|Tom 2|
+|`T3`|Tom 3|
+|`T4`|Tom 4|
+|`T5`|Tom 5|
+|`T6`|Tom 6|
+
+### EZDrummer 2
+
+Will be supported soon.
 
 |Symbol|Drum|
 |--|--|
