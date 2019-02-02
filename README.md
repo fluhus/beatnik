@@ -10,8 +10,6 @@ With Beatnik you can type **text** which describes your beat, and Beatnik will i
 
 ## Samples
 
-**Song 2**
-<iframe src="https://drive.google.com/file/d/1CVjNAYApnMNlhYOlAlGLJCB7WGvBDJO5/preview"></iframe>
+[Song 2](https://drive.google.com/file/d/1CVjNAYApnMNlhYOlAlGLJCB7WGvBDJO5/preview)
 
-**50 Ways**
-<iframe src="https://drive.google.com/file/d/1qEw-5D6pLfflZBiCXrj60oeYwtHhJ1h_/preview"></iframe>
+[50 Ways](https://drive.google.com/file/d/1qEw-5D6pLfflZBiCXrj60oeYwtHhJ1h_/preview)
