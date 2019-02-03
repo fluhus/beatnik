@@ -44,7 +44,7 @@ const indexPageSrc = `<!DOCTYPE html>
 
   <script>
     function compile() {
-	  let src = $("#src").text();
+	  let src = $("#src").val();
 	  $.ajax({
 	    url: "/compile",
 		data: {src: src},
@@ -74,7 +74,7 @@ const indexPageSrc = `<!DOCTYPE html>
 
   <h3>Source</h3>
     <div class="form-group">
-      <textarea id="src" class="form-control" rows="10" name="src"
+      <textarea id="src" class="form-control" rows="10"
 	   style="font-family: monospace">bpm:120
 
 # Try this example!
