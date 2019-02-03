@@ -1,8 +1,8 @@
 package beatnik
 
-// Default MIDI note mapping.
-var midiDrums = map[string]byte{
-	"K": 36, //Kick
+// Windows MIDI synth note mapping.
+var windowsSynth = map[string]byte{
+	"K": 36, // Kick
 
 	"SS": 37, // Snare sidestick
 	"S":  38, // Snare
@@ -18,7 +18,7 @@ var midiDrums = map[string]byte{
 
 	"R1": 51, // Ride 1
 	"R2": 59, // Ride 2
-	"RB": 53, // Ride 2
+	"RB": 53, // Ride bell
 
 	"T1": 50, // Tom 1
 	"T2": 48, // Tom 2
