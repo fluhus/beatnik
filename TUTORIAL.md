@@ -15,27 +15,31 @@ Let's break it down.
 
 ## Tempo
 
-The first part is the tempo. Syntax is simple: `bpm:120` for 120 BPM.
+`bpm:120`
+
+The first part is the tempo. Syntax is simple: `bpm:X` for X BPM.
 
 Varying tempo is currently unsupported.
 
 ## Hits
 
+`HC,K.`
+
 A **hit** is a bunch of drums played at the same time.
 
 A hit contains drums to play, their velocities (volumes) and a duration. Hits are separated by spaces.
 
-Example hit: `HC,K.`
-
 ## Drums
 
-`HC` means hi-hat closed, `K` means kick, `S` means snare (see the full list below).
+`K` means kick, `S` means snare, `HC` means hi-hat closed (see the full list below).
 
 Drums separated by commas are played at the same time. `HC,K` means hi-hat closed played with kick drum.
 
 You can have any number of different drums on the same hit.
 
 ## Hit Duration
+
+`.` or `~`
 
 Duration means the interval between a hit and the next hit after it.
 
@@ -59,6 +63,8 @@ Example: `HC,K.` means hi-hat and kick, 1/8 bar.
 Adding `>` to the duration will make it a triplet, multiplying the duration by 2/3.
 
 ## Velocity
+
+`+` or `-`
 
 Velocity means the volume of a single drum hit.
 
@@ -92,6 +98,8 @@ Or:
     K
 
 ## Comments
+
+`# Hello`
 
 You can write comments with the `#` sign. Meaning everything that follows `#` is ignored on that line.
 
