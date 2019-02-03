@@ -55,7 +55,7 @@ const indexPageSrc = `<!DOCTYPE html>
 	}
 
 	function download() {
-	  let src = $("#src").text();
+	  let src = $("#src").val();
 	  $.ajax({
 	    url: "/compile",
 		data: {src: src},
