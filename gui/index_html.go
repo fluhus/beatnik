@@ -26,12 +26,45 @@ const indexPageSrc = `<!DOCTYPE html>
 <head>
   <title>Beatnik</title>
   <meta charset="utf-8">
-  
+
+  <!-- Meta information. -->
+  <meta property="og:title" content="Beatnik" />
+  <meta property="og:description" content="Text your drum track" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://www.clipartmax.com/png/middle/173-1731477_drum-kit-sprite-005-cartoon-drum-kit-png.png" />
+
   <!-- Bootstrap stuff. -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+  <!-- MIDI player. -->
+  <script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
+
+  <script>
+    function compile() {
+	  let src = $("#src").text();
+	  $.ajax({
+	    url: "/compile",
+		data: {src: src},
+		success: function(result) {
+          MIDIjs.play("/midi/" + result);
+        },
+	  });
+	}
+
+	function download() {
+	  let src = $("#src").text();
+	  $.ajax({
+	    url: "/compile",
+		data: {src: src},
+		success: function(result) {
+          top.location.href = "/midi/" + result;
+        },
+	  });
+	}
+  </script>
 </head>
 <body>
 
@@ -40,9 +73,9 @@ const indexPageSrc = `<!DOCTYPE html>
   <p></p>
 
   <h3>Source</h3>
-  <form action="/midi" method="post" target="_blank">
     <div class="form-group">
-      <textarea class="form-control" rows="10" name="src" style="font-family: monospace">bpm:120
+      <textarea id="src" class="form-control" rows="10" name="src"
+	   style="font-family: monospace">bpm:120
 
 # Try this example!
 HC,K. HC.   HC,S. HC.
@@ -51,8 +84,18 @@ HC,K. HC.   HC,S. HC.
 S+.. S.. S.. S.. T3+.. T3.. T4.. T4..
 K,C2~~</textarea>
     </div>
-    <button type="submit" class="btn btn-primary">Get MIDI!</button>
-  </form>
+	<button class="btn btn-default" type="button"
+	    data-toggle="tooltip" title="Play" onclick="compile()">
+	  <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+	</button>
+	<button class="btn btn-default" type="button"
+	    data-toggle="tooltip" title="Stop" onclick="MIDIjs.stop()">
+	  <span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+	</button>
+    <button class="btn btn-default" type="button"
+	    data-toggle="tooltip" title="Download" onclick="download()">
+	  <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+	</button>
 
   <hr>
   <p><a href="https://github.com/fluhus/beatnik/blob/master/TUTORIAL.md"

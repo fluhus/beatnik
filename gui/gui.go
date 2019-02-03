@@ -7,8 +7,10 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"math/rand"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/fluhus/beatnik"
 )
@@ -30,13 +32,16 @@ func main() {
 	if *src != "" {
 		indexFile = filepath.Join(*src, "index.html")
 	}
+	rand.Seed(time.Now().UnixNano())
 
+	// Main page handler.
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", mimeHTML)
 		template.Must(indexPage(indexFile)).Execute(w, nil)
 	})
 
-	http.HandleFunc("/midi", func(w http.ResponseWriter, r *http.Request) {
+	// Compile handler.
+	http.HandleFunc("/compile", func(w http.ResponseWriter, r *http.Request) {
 		// Get source.
 		r.ParseForm()
 		src := r.FormValue("src")
@@ -59,9 +64,27 @@ func main() {
 			return
 		}
 
+		file := fmt.Sprintf("%v.midi", rand.Int63())
+		putMIDIFile(file, midi)
+
+		w.Write([]byte(file))
+	})
+
+	// MIDI handler.
+	http.HandleFunc("/midi/", func(w http.ResponseWriter, r *http.Request) {
+		file := r.URL.Path[len("/midi/"):]
+
+		midi, ok := getMIDIFile(file)
+		if !ok {
+			w.Header().Set("Content-Type", mimeText)
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintln(w, "MIDI file not found:", file)
+			return
+		}
+
 		w.Header().Set("Content-Type", mimeMIDI)
 		w.Header().Set("Content-Disposition",
-			"attachment; filename=\"beat.mid\"")
+			"attachment; filename=\""+file+"\"")
 		w.Write(midi)
 	})
 
