@@ -64,7 +64,7 @@ func main() {
 			return
 		}
 
-		file := fmt.Sprintf("%v.midi", rand.Int63())
+		file := fmt.Sprintf("%v.mid", rand.Int63())
 		putMIDIFile(file, midi)
 
 		w.Write([]byte(file))
