@@ -7,6 +7,11 @@ import (
 	"time"
 )
 
+const (
+	// How long to keep a compiled MIDI before removing it.
+	midiFileTTL = time.Minute
+)
+
 var (
 	midiFiles     = map[string][]byte{}
 	midiFilesLock sync.Mutex
@@ -34,7 +39,7 @@ func putMIDIFile(name string, midi []byte) {
 	defer midiFilesLock.Unlock()
 	midiFiles[name] = midi
 	go func() {
-		time.Sleep(time.Minute)
+		time.Sleep(midiFileTTL)
 		deleteMIDIFile(name)
 	}()
 }
