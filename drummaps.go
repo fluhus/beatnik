@@ -1,7 +1,11 @@
 package beatnik
 
-// Windows MIDI synth note mapping.
-var windowsSynth = map[string]byte{
+// A specific mapping from drum textual representation to its MIDI code.
+// Kits can be added to support additional drum machines.
+type drumKit map[string]byte
+
+// Windows MIDI synth.
+var windowsSynth = drumKit{
 	"K": 36, // Kick
 
 	"SS": 37, // Snare sidestick
@@ -28,8 +32,8 @@ var windowsSynth = map[string]byte{
 	"T6": 41, // Tom 6
 }
 
-// EZdrummer 2 note mapping.
-var ezDrummer = map[string]byte{
+// EZdrummer 2 notes.
+var ezDrummer2 = drumKit{
 	"K": 36, // Kick
 
 	"S":  38, // Snare

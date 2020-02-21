@@ -19,7 +19,7 @@ var (
 	comment        = regexp.MustCompile("#[^\n]*")
 
 	// Maps textual representation of notes to byte values.
-	drumNotes = map[string]byte{}
+	drumNotes = drumKit{}
 
 	// Maps +- notation to actual velocities.
 	velocities = map[string]Velocity{
@@ -45,22 +45,20 @@ var (
 		".....": 96 / 32,
 	}
 
+	// Maps kit name to the kit.
+	kits = map[string]map[string]byte{
+		"windows":    windowsSynth,
+		"ezdrummer2": ezDrummer2,
+	}
+
 	// Maps directive name (in text syntax) to its handler.
 	directives = map[string]directive{
 		"bpm": setBPM,
+		"kit": setKit,
 	}
 )
 
 func init() {
-	// Initialize drumNotes with mapping from string to byte ("38": byte(38)).
-	byteMax := int(^byte(0))
-	for i := 1; i <= byteMax; i++ {
-		drumNotes[fmt.Sprint(i)] = byte(i)
-	}
-	for k, v := range ezDrummer {
-		drumNotes[k] = v
-	}
-
 	// Add triplets to durations.
 	for d := range durations {
 		durations[d+">"] = durations[d] * 2 / 3
@@ -69,6 +67,7 @@ func init() {
 
 // ParseTrack parses hit notations separated by whitespaces.
 func ParseTrack(s string) (*Track, error) {
+	setKit(nil, "windows")
 	t := &Track{}
 	for i, token := range tokenize(s) {
 		switch {
@@ -220,5 +219,24 @@ func setBPM(t *Track, s string) error {
 		return fmt.Errorf("bad BPM: %v, must be between 1 and 500", bpm)
 	}
 	t.BPM = uint(bpm)
+	return nil
+}
+
+func setKit(t *Track, s string) error {
+	kit, ok := kits[s]
+	if !ok {
+		return fmt.Errorf("unrecognized drum kit: %s", s)
+	}
+
+	// Initialize drumNotes with mapping from string to byte ("38": byte(38)).
+	drumNotes = drumKit{}
+	byteMax := int(^byte(0))
+	for i := 1; i <= byteMax; i++ {
+		drumNotes[fmt.Sprint(i)] = byte(i)
+	}
+	for k, v := range kit {
+		drumNotes[k] = v
+	}
+
 	return nil
 }

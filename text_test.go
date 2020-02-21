@@ -6,6 +6,7 @@ import (
 )
 
 func TestParseHit(t *testing.T) {
+	setKit(nil, "ezdrummer2")
 	tests := []struct {
 		in   string
 		want *Hit
@@ -35,6 +36,7 @@ func TestParseHit(t *testing.T) {
 }
 
 func TestParseHit_triplets(t *testing.T) {
+	setKit(nil, "ezdrummer2")
 	tests := []struct {
 		in   string
 		want *Hit
@@ -88,7 +90,7 @@ func TestParseHit_badInput(t *testing.T) {
 }
 
 func TestParseTrack_graceNotes(t *testing.T) {
-	in := "bpm:111 (36) 42 38. (44,43-..) 46"
+	in := "bpm:111 kit:ezdrummer2 (36) 42 38. (44,43-..) 46"
 	want := &Track{
 		Hits: []*Hit{
 			&Hit{map[byte]Velocity{36: F}, 96},
@@ -109,7 +111,7 @@ func TestParseTrack_graceNotes(t *testing.T) {
 }
 
 func TestParseTrack_badGraceNote(t *testing.T) {
-	in := "bpm:111 (36) 42 38. (44,43-.) 46"
+	in := "bpm:111 kit:ezdrummer2 (36) 42 38. (44,43-.) 46"
 	got, err := ParseTrack(in)
 	if err == nil {
 		t.Fatalf("ParseTrack(%v)=%v, want failure", in, got)
@@ -140,6 +142,8 @@ func TestParseTrack(t *testing.T) {
 }
 
 var testTrack = `bpm:123  # Track tempo.
+kit:ezdrummer2
+
 42~~#~  	
   36+,49+,57+
   
