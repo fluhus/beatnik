@@ -47,7 +47,7 @@ var (
 
 	// Maps directive name (in text syntax) to its handler.
 	directives = map[string]directive{
-		"bpm": bpmDirective,
+		"bpm": setBPM,
 	}
 )
 
@@ -210,8 +210,8 @@ func (t *Track) parseDirective(s string) error {
 	return d(t, m[2])
 }
 
-// bpmDirective changes a track's bpm.
-func bpmDirective(t *Track, s string) error {
+// setBPM changes a track's bpm.
+func setBPM(t *Track, s string) error {
 	bpm, err := strconv.Atoi(s)
 	if err != nil {
 		return fmt.Errorf("bad input to BPM: %v", err)
