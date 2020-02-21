@@ -119,7 +119,7 @@ HC,K. HC.   HC,S. HC.  # Check how this part sits with the bass
 
 A "kit" is a mapping from text to a MIDI note. Different synths work with different notes, so kits make it possible to use the same symbols (`K`, `S`, etc) to write to different synths.
 
-Set the kit using `kit:XXX` where XXX is the desired kit.
+Set the kit using `kit:X` where X is the desired kit.
 
 If you want a kit added here, please open an issue or send a pull request.
 
