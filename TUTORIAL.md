@@ -31,7 +31,7 @@ A hit contains drums to play, their velocities (volumes) and a duration. Hits ar
 
 ## Drums
 
-`K` means kick, `S` means snare, `HC` means hi-hat closed (see the full list below).
+`K` means kick, `S` means snare, `HC` means hi-hat closed. The full list depends on the drum kit that you are using (see kit list below).
 
 Drums separated by commas are played at the same time. `HC,K` means hi-hat closed played with kick drum.
 
@@ -115,9 +115,19 @@ HC,K. HC.   HC,S. HC.
 HC,K. HC.   HC,S. HC.  # Check how this part sits with the bass
 ```
 
-## Drum Symbols
+## Drum Kits
+
+A "kit" is a mapping from text to a MIDI note. Different synths work with different notes, so kits make it possible to use the same symbols (`K`, `S`, etc) to write to different synths.
+
+Set the kit using `kit:XXX` where XXX is the desired kit.
+
+If you want a kit added here, please open an issue or send a pull request.
 
 ### Windows Drums (default)
+
+```
+kit:windows  # Not necessary, because that's the default kit.
+```
 
 |Symbol|Drum|
 |--|--|
@@ -148,7 +158,9 @@ HC,K. HC.   HC,S. HC.  # Check how this part sits with the bass
 
 ### EZDrummer 2
 
-Will be supported soon.
+```
+kit:ezdrummer2
+```
 
 |Symbol|Drum|
 |--|--|
