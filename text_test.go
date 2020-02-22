@@ -6,7 +6,36 @@ import (
 )
 
 func TestParseHit(t *testing.T) {
-	setKit(nil, "ezdrummer2")
+	track := newTrackBuilder()
+	tests := []struct {
+		in   string
+		want *Hit
+	}{
+		{"42~~", &Hit{map[byte]Velocity{42: F}, 96 * 4}},
+		{"38-..", &Hit{map[byte]Velocity{38: MF}, 96 / 4}},
+		{"36+,49,57+", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96}},
+		{"36----,49---,57++..", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24}},
+		{"HC~~", &Hit{map[byte]Velocity{42: F}, 96 * 4}},
+		{"S-..", &Hit{map[byte]Velocity{38: MF}, 96 / 4}},
+		{"K+,C1,C2+", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96}},
+		{"K----,C1---,C2++..", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24}},
+	}
+
+	for i, test := range tests {
+		got, err := track.parseHit(test.in)
+		if err != nil {
+			t.Errorf("#%v/%v parseHit(%v), want success: %v",
+				i+1, len(tests), test.in, err)
+			continue
+		}
+		if !reflect.DeepEqual(got, test.want) {
+			t.Errorf("#%v/%v parseHit(%v)=%v, want %v",
+				i+1, len(tests), test.in, got, test.want)
+		}
+	}
+}
+
+func TestParseHit_ezdrummer2(t *testing.T) {
 	tests := []struct {
 		in   string
 		want *Hit
@@ -21,8 +50,10 @@ func TestParseHit(t *testing.T) {
 		{"K----,C2---,C3++..", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24}},
 	}
 
+	track := newTrackBuilder()
+	setKit(track, "ezdrummer2")
 	for i, test := range tests {
-		got, err := parseHit(test.in)
+		got, err := track.parseHit(test.in)
 		if err != nil {
 			t.Errorf("#%v/%v parseHit(%v), want success: %v",
 				i+1, len(tests), test.in, err)
@@ -36,7 +67,6 @@ func TestParseHit(t *testing.T) {
 }
 
 func TestParseHit_triplets(t *testing.T) {
-	setKit(nil, "ezdrummer2")
 	tests := []struct {
 		in   string
 		want *Hit
@@ -45,14 +75,15 @@ func TestParseHit_triplets(t *testing.T) {
 		{"38-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 2 / 3}},
 		{"36+,49,57+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 * 2 / 3}},
 		{"36----,49---,57++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 * 2 / 3}},
-		{"HC~~>", &Hit{map[byte]Velocity{22: F}, 96 * 8 / 3}},
+		{"HC~~>", &Hit{map[byte]Velocity{42: F}, 96 * 8 / 3}},
 		{"S-..>", &Hit{map[byte]Velocity{38: MF}, 96 / 2 / 3}},
-		{"K+,C2,C3+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 * 2 / 3}},
-		{"K----,C2---,C3++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 * 2 / 3}},
+		{"K+,C1,C2+>", &Hit{map[byte]Velocity{49: F, 57: FF, 36: FF}, 96 * 2 / 3}},
+		{"K----,C1---,C2++..>", &Hit{map[byte]Velocity{49: P, 57: FFF, 36: PP}, 24 * 2 / 3}},
 	}
 
+	track := newTrackBuilder()
 	for i, test := range tests {
-		got, err := parseHit(test.in)
+		got, err := track.parseHit(test.in)
 		if err != nil {
 			t.Errorf("#%v/%v parseHit(%v), want success: %v",
 				i+1, len(tests), test.in, err)
@@ -81,8 +112,9 @@ func TestParseHit_badInput(t *testing.T) {
 		".",
 	}
 
+	track := newTrackBuilder()
 	for i, test := range tests {
-		if got, err := parseHit(test); err == nil {
+		if got, err := track.parseHit(test); err == nil {
 			t.Errorf("#%v/%v parseHit(%v)=%v, want failure",
 				i+1, len(tests), test, got)
 		}
