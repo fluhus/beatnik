@@ -88,6 +88,6 @@ func main() {
 		w.Write(midi)
 	})
 
-	fmt.Println("Listening")
+	fmt.Println("Listening on http://localhost:" + fmt.Sprint(*port))
 	http.ListenAndServe(":"+fmt.Sprint(*port), nil)
 }
