@@ -50,8 +50,9 @@ var (
 
 	// Maps directive name (in text syntax) to its handler.
 	directives = map[string]directive{
-		"bpm": setBPM,
-		"kit": setKit,
+		"bpm":  setBPM,
+		"kit":  setKit,
+		"loop": addLoop,
 	}
 )
 
@@ -65,7 +66,8 @@ func init() {
 // trackBuilder is a track with metadata for building.
 type trackBuilder struct {
 	Track
-	kit drumKit
+	kit   drumKit
+	loops []*loop // A stack of loops.
 }
 
 // newTrackBuilder returns a new builder with default parameters.
@@ -130,6 +132,11 @@ func ParseTrack(s string) (*Track, error) {
 			return nil, fmt.Errorf("token #%v: unrecognized token: %q", i+1, token)
 		}
 	}
+
+	if len(t.loops) > 0 {
+		return nil, fmt.Errorf("track has %v unended loops", len(t.loops))
+	}
+
 	return &t.Track, nil
 }
 
@@ -202,6 +209,8 @@ func halfParenthesized(s string) bool {
 			(s[0] != '(' && s[len(s)-1] == ')'))
 }
 
+// ----- DIRECTIVES ------------------------------------------------------------
+
 // A directive is a function that alters the track itself.
 type directive func(*trackBuilder, string) error
 
@@ -245,6 +254,42 @@ func setKit(t *trackBuilder, s string) error {
 	}
 	for k, v := range kit {
 		t.kit[k] = v
+	}
+
+	return nil
+}
+
+// A loop represents an unended loop during parsing.
+type loop struct {
+	start int // Index of first hit in the loop.
+	n     int // Number of repetitions.
+}
+
+// addLoop handles a loop directive.
+func addLoop(t *trackBuilder, s string) error {
+	if s != "end" {
+		n, err := strconv.Atoi(s)
+		if err != nil || n <= 0 {
+			return fmt.Errorf("bad input to loop: %v, should be a positive "+
+				"number or end", err)
+		}
+		t.loops = append(t.loops, &loop{len(t.Hits), n})
+		return nil
+	}
+
+	// s == "end"
+	if len(t.loops) == 0 {
+		return fmt.Errorf("loop end without loop start")
+	}
+	lp := t.loops[len(t.loops)-1]
+	t.loops = t.loops[:len(t.loops)-1] // Pop last loop.
+
+	rep := t.Hits[lp.start:]
+	// Up to n-1 because the first repetition is already written.
+	for i := 0; i < lp.n-1; i++ {
+		for _, hit := range rep {
+			t.Hits = append(t.Hits, hit.copy())
+		}
 	}
 
 	return nil

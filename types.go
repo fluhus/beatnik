@@ -86,6 +86,22 @@ type Hit struct {
 	T     uint              // Number of ticks this hit lasts (96 is a quarter bar).
 }
 
+func (h *Hit) String() string {
+	return fmt.Sprintf("{t=%v,%v}", h.T, h.Notes)
+}
+
+// copy returns a deep copy of a hit.
+func (h *Hit) copy() *Hit {
+	result := &Hit{
+		map[byte]Velocity{},
+		h.T,
+	}
+	for k, v := range h.Notes {
+		result.Notes[k] = v
+	}
+	return result
+}
+
 // encode returns a binary encoding of the hit as midi events.
 func (h *Hit) encode() []byte {
 	buf := bytes.NewBuffer(nil)

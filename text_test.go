@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+// ----- PARSE HIT -------------------------------------------------------------
+
 func TestParseHit(t *testing.T) {
 	track := newTrackBuilder()
 	tests := []struct {
@@ -121,6 +123,42 @@ func TestParseHit_badInput(t *testing.T) {
 	}
 }
 
+// ----- PARSE TRACK -----------------------------------------------------------
+
+func TestParseTrack(t *testing.T) {
+	want := &Track{
+		Hits: []*Hit{
+			&Hit{map[byte]Velocity{42: F}, 96 * 4},
+			&Hit{map[byte]Velocity{49: FF, 57: FF, 36: FF}, 96},
+			&Hit{map[byte]Velocity{49: PP, 57: PP, 36: PP}, 24},
+			&Hit{map[byte]Velocity{46: F, 36: F}, 96 + 48 + 24},
+			&Hit{map[byte]Velocity{38: F, 42: F}, 96},
+			&Hit{map[byte]Velocity{36: F, 38: F, 22: F}, 96},
+			&Hit{map[byte]Velocity{36: F, 58: F}, 96 / 2},
+			&Hit{map[byte]Velocity{40: MF}, 96 * 2},
+		},
+		BPM: 123,
+	}
+	got, err := ParseTrack(testTrack)
+	if err != nil {
+		t.Fatalf("ParseTrack(%v) should succeed, but failed: %v", testTrack, err)
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("ParseTrack(%v)=%v, want %v", testTrack, got, want)
+	}
+}
+
+const testTrack = `bpm:123  # Track tempo.
+kit:ezdrummer2
+
+42~~#~  	
+  36+,49+,57+
+  
+# Just a comment.
+		36----,49----,57----.. 36,46 . .. 38,42 # hi.#$$dfSfsdxc
+K,S,HC . (C3M,K.) SR-~
+`
+
 func TestParseTrack_graceNotes(t *testing.T) {
 	in := "bpm:111 kit:ezdrummer2 (36) 42 38. (44,43-..) 46"
 	want := &Track{
@@ -150,39 +188,53 @@ func TestParseTrack_badGraceNote(t *testing.T) {
 	}
 }
 
-func TestParseTrack(t *testing.T) {
-	want := &Track{
-		Hits: []*Hit{
-			&Hit{map[byte]Velocity{42: F}, 96 * 4},
-			&Hit{map[byte]Velocity{49: FF, 57: FF, 36: FF}, 96},
-			&Hit{map[byte]Velocity{49: PP, 57: PP, 36: PP}, 24},
-			&Hit{map[byte]Velocity{46: F, 36: F}, 96 + 48 + 24},
-			&Hit{map[byte]Velocity{38: F, 42: F}, 96},
-			&Hit{map[byte]Velocity{36: F, 38: F, 22: F}, 96},
-			&Hit{map[byte]Velocity{36: F, 58: F}, 96 / 2},
-			&Hit{map[byte]Velocity{40: MF}, 96 * 2},
-		},
-		BPM: 123,
+func TestParseTrack_loop(t *testing.T) {
+	tests := []struct {
+		in, want string
+	}{
+		{"bpm:100 loop:1 K loop:end", "bpm:100 K"},
+		{"bpm:100 loop:4 K loop:end", "bpm:100 K K K K"},
+		{"bpm:100 loop:2 K. S loop:end", "bpm:100 K. S K. S"},
+		{"bpm:100 S loop:2 K K loop:end S", "bpm:100 S K K K K S"},
+		{"bpm:100 S loop:2 K (K..) loop:end S", "bpm:100 S K (K..) K (K..) S"},
+		{"bpm:100 S loop:2 K loop:3 T1 loop:end K loop:end S",
+			"bpm:100 S K T1 T1 T1 K K T1 T1 T1 K S"},
 	}
-	got, err := ParseTrack(testTrack)
-	if err != nil {
-		t.Fatalf("ParseTrack(%v) should succeed, but failed: %v", testTrack, err)
-	}
-	if !reflect.DeepEqual(got, want) {
-		t.Fatalf("ParseTrack(%v)=%v, want %v", testTrack, got, want)
+
+	for _, test := range tests {
+		got, err := ParseTrack(test.in)
+		if err != nil {
+			t.Fatalf("ParseTrack(%v) failed: %v", test.in, err)
+		}
+		want, err := ParseTrack(test.want)
+		if err != nil {
+			t.Fatalf("ParseTrack(%v) failed: %v", test.want, err)
+		}
+		if !reflect.DeepEqual(got, want) {
+			t.Fatalf("ParseTrack(%v)=%v, want %v", test.in, got, want)
+		}
 	}
 }
 
-var testTrack = `bpm:123  # Track tempo.
-kit:ezdrummer2
+func TestParseTrack_badLoop(t *testing.T) {
+	tests := []string{
+		"bpm:100 loop:end",
+		"bpm:100 loop:0 K loop:end",
+		"bpm:100 loop:1 K",
+		"bpm:100 loop:1 K loop:endd",
+		"bpm:100 loop:1 K loop:end loop:end",
+		"bpm:100 loop:1 K loop:endd loop:end",
+	}
 
-42~~#~  	
-  36+,49+,57+
-  
-# Just a comment.
-		36----,49----,57----.. 36,46 . .. 38,42 # hi.#$$dfSfsdxc
-K,S,HC . (C3M,K.) SR-~
-`
+	for _, test := range tests {
+		got, err := ParseTrack(test)
+		if err == nil {
+			t.Fatalf("ParseTrack(%v)=%v, want failure", test, got)
+		}
+	}
+}
+
+// ----- HELPERS ---------------------------------------------------------------
 
 func TestParenthesized(t *testing.T) {
 	yes := []string{"()", "(a)", "(aaa)"}
