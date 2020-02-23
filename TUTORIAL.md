@@ -97,6 +97,24 @@ Or:
     K
     K
 
+## Loops
+
+    loop:4
+    K S K S
+    loop:end
+
+Use the `loop` directive to repeat a section. The number indicates how many repetitions. `loop:end` indicates the end of the repeated section.
+
+Nested loops are allowed:
+
+    loop:4
+      K S
+      loop:2
+        HC S HC S
+      loop:end
+      K S
+    loop:end
+
 ## Comments
 
 `# Hello`
