@@ -8,6 +8,12 @@ With Beatnik you can type **text** which describes your beat, and Beatnik will i
 
 ## Getting Started
 
+1. Go to the (experimental) [demo page](http://207.154.198.149:8080/).
+2. Read the [tutorial](https://github.com/fluhus/beatnik/blob/master/TUTORIAL.md).
+3. Start making beats!
+
+## Running Locally
+
 1. Go to [releases](https://github.com/fluhus/beatnik/releases) and download the relevant file. It contains two executables: `btnk` and `gui`.
 2. Read the [tutorial](https://github.com/fluhus/beatnik/blob/master/TUTORIAL.md).
 3. Start making beats using `btnk` with the command line, or `gui` with your browser.
