@@ -8,7 +8,7 @@ With Beatnik you can type **text** which describes your beat, and Beatnik will i
 
 ## Getting Started
 
-1. Go to the (experimental) [demo page](http://207.154.198.149:8080/).
+1. Go to the (experimental) [demo page](http://165.22.81.155:8080/).
 2. Read the [tutorial](https://github.com/fluhus/beatnik/blob/master/TUTORIAL.md).
 3. Start making beats!
 
